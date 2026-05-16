@@ -6,27 +6,32 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Fix escaped quotes
+        run: |
+          find frontend -type f \( -name "*.tsx" -o -name "*.ts" -o -name "*.js" -o -name "*.jsx" \) -exec sed -i 's/\\"/"/g' {} +
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-      - run: npm install
-      - name: Prebuild Android project
-        run: npx expo prebuild -p android --clean
-        env:
-          EXPO_PUBLIC_BACKEND_URL: https://YOUR-BACKEND-URL.com
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Prebuild Android
+        working-directory: frontend
+        run: npx expo prebuild --platform android --clean
+
       - name: Build APK
+        working-directory: frontend
         run: cd android && ./gradlew assembleRelease
-        env:
-          EXPO_PUBLIC_BACKEND_URL: https://YOUR-BACKEND-URL.com
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
