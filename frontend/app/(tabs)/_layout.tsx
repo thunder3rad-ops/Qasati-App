@@ -22,10 +22,10 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name=\"index\"
+        name="index"
         options={{
           title: 'الرئيسية',
-          tabBarIcon: ({ color, size }) => <Ionicons name=\"home\" size={size} color={color} />,
+          tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
